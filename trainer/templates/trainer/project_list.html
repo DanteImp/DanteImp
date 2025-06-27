@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<h1>🚀 Proje Yönetimi</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>İsim</th>
+            <th>Durum</th>
+            <th>Oluşturma</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if projects %}
+            {% for project in projects %}
+            <tr>
+                <td>{{ project.name }}</td>
+                <td>
+                    {% if project.status == "done" %}
+                        <span style="color: green;">✔ Tamamlandı</span>
+                    {% elif project.status == "error" %}
+                        <span style="color: red;">❌ Hata</span>
+                    {% else %}
+                        <span style="color: gray;">⏳ Beklemede</span>
+                    {% endif %}
+                </td>
+                <td>{{ project.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'trainer:start_project' project.id %}">🚀 Başlat</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="4">Henüz proje oluşturulmamış.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

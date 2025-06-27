@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  {% if original.status == "done" %}
+    <div style="margin-top: 10px; text-align: right;">
+      <a class="button"
+         style="background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none;"
+         href="{% url 'admin:open_project_folder' original.id %}">
+        📂 Proje Klasörünü Aç
+      </a>
+    </div>
+  {% endif %}
+{% endblock %}

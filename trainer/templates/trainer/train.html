@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>📦 Yeni Eğitim Başlat</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div>
+    <label for="project">Proje:</label>
+    <select name="project" id="project" required>
+      {% for project in form.fields.project.queryset %}
+        <option value="{{ project.id }}">{{ project.process_name }} - {{ project.name }}</option>
+      {% empty %}
+        <option disabled>Uygun proje yok</option>
+      {% endfor %}
+    </select>
+    <small>✅ Sadece status=done olan projeler listelenir.</small>
+  </div>
+
+  <div>
+    <label for="img_size">Görsel Boyutu:</label>
+    <input type="number" name="img_size" value="640" required>
+    <small>Örn: 640</small>
+  </div>
+
+  <div>
+    <label for="epochs">Epochs:</label>
+    <input type="number" name="epochs" value="100" required>
+    <small>Örn: 100</small>
+  </div>
+
+  <div>
+    <label for="batch_size">Batch Size:</label>
+    <input type="number" name="batch_size" value="16" required>
+    <small>Örn: 16</small>
+  </div>
+
+  <div>
+    <label for="weights_path">Ağırlıklar:</label>
+    <input type="file" name="weights_path_input" onchange="updatePath(this, 'weights_path')">
+    <input type="text" name="weights_path" value="yolov7/yolov7.pt" readonly>
+    <small>Varsayılan: yolov7/yolov7.pt</small>
+  </div>
+
+  <div>
+    <label for="device">Cihaz:</label>
+    <input type="text" name="device" value="0" required>
+    <small>Örn: 0 → GPU 0</small>
+  </div>
+
+  <div>
+    <label for="hyp_path">Hyp Dosyası:</label>
+    <input type="file" name="hyp_path_input" onchange="updatePath(this, 'hyp_path')">
+    <input type="text" name="hyp_path" value="yolov7/data/hyp.scratch.custom.yaml" readonly>
+    <small>Varsayılan: yolov7/data/hyp.scratch.custom.yaml</small>
+  </div>
+
+  <div>
+    <label for="noautoanchor">No Auto Anchor:</label>
+    <input type="checkbox" name="noautoanchor">
+    <small>Seçiliyse anchor'lar otomatik hesaplanmaz.</small>
+  </div>
+
+  <div>
+    <label for="extra_args">Ek Argümanlar:</label>
+    <textarea name="extra_args" rows="2" placeholder="--exist-ok gibi YOLO argümanları..."></textarea>
+  </div>
+
+  <div>
+    <label for="description">Açıklama:</label>
+    <textarea name="description" rows="3" placeholder="Bu eğitimin amacı veya notları..."></textarea>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <button type="submit">🚀 Eğitimi Başlat</button>
+  </div>
+</form>
+
+<script>
+function updatePath(inputElem, targetId) {
+  const fullPath = inputElem.value;
+  const fileName = fullPath.split('\\').pop().split('/').pop();
+  document.getElementById(targetId).value = inputElem.name.includes('weights')
+    ? 'yolov7/' + fileName
+    : 'yolov7/data/' + fileName;
+}
+</script>
+
+{% endblock %}

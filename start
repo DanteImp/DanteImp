@@ -1,0 +1,188 @@
+# 1) Sanal ortamı aktif et
+#    Bu komut, önceden oluşturduğun 'yololab7' adlı virtualenv'i etkinleştirir.
+source /home/toyota/Desktop/yolov7_proje/yololab7/bin/activate
+
+
+
+nvidia-smi
+
+kill -9 16958
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
+
+
+--evolve hyper parametre çıkarma
+python3 kmeans_anchors.py --project_dir /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW --img_size 640
+
+python train.py \
+--evolve \
+--data /home/toyota/Desktop/yolov7_proje/projects/RR_SPOILER_CLIP/data.yaml \
+--weights yolov7.pt \
+--cfg /home/toyota/Desktop/yolov7_proje/projects/RR_SPOILER_CLIP/yolov7.yaml \
+--hyp /home/toyota/Desktop/yolov7_proje/yolov7/data/hyp.scratch.custom.yaml \
+--epochs 30 \
+--batch-size 16 \
+--img 640 \
+--device 0 \
+--project trainOutput \
+--name evolve_run \
+--exist-ok \
+--noautoanchor
+
+python3 train.py \
+  --batch-size 16 \
+  --project trainOutput \
+  --name RR_GARNISH_NUT_NEW \
+  --img 640 \
+  --epochs 10 \
+  --weights /home/toyota/Desktop/yolov7_proje/yolov7/yolov7.pt \
+  --device 0 \
+  --hyp /home/toyota/Desktop/yolov7_proje/yolov7/data/hyp.scratch.custom.yaml \
+  --data /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW/data.yaml \
+  --cfg /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW/yolov7.yaml
+
+
+python train.py \
+--evolve \
+--data /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW/data.yaml \
+--weights yolov7.pt \
+--cfg /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW/yolov7.yaml \
+--hyp /home/toyota/Desktop/yolov7_proje/yolov7/data/hyp.scratch.custom.yaml \
+--epochs 30 \
+--batch-size 16 \
+--img 640 \
+--device 0 \
+--project trainOutput \
+--name evolve_run \
+--exist-ok \
+--noautoanchor
+
+ancorr
+
+Dosyanın en sonuna şu kodu ekle (örneğin nano yolov7/utils/autoanchor.py komutuyla):
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", type=str, required=True, help="Path to data.yaml")
+    parser.add_argument("--img", type=int, default=640, help="Image size")
+    parser.add_argument("--n", type=int, default=9, help="Number of anchors")
+    args = parser.parse_args()
+
+    kmean_anchors(path=args.data, img_size=args.img, n=args.n, verbose=True)
+    
+Ancorr test kodu
+   
+python -m utils.autoanchor --data ../projects/RR_SPOILER_CLIP/data.yaml --img 640
+
+
+python3 yolov7/utils/autoanchor.py --data /home/toyota/Desktop/yolov7_proje/projects/RR_GARNISH_NUT_NEW/data.yaml --img 640 --n 9
+
+
+# 2) auto label
+python3 /home/toyota/Desktop/yolov7_proje/yolov7/detect.py \
+  --weights /home/toyota/Desktop/yolov7_proje/trainOutput/ABS_AI/weights/best.pt \
+  --source /home/toyota/Desktop/yolov7_proje/auto_label/unlabelled_images \
+  --conf 0.25 \
+  --img 640 \
+  --save-txt \
+  --save-conf \
+  --nosave
+  
+  
+  
+  
+# 2) Proje klasörünü oluştur ve veri setini ayır
+#    -p: proje adı
+#    -r: eğitim/doğrulama oranı (0.8 = %80 eğitim, %20 doğrulama)
+#    -c: sınıf isimleri (boşlukla ayrılmış)
+./start.sh -p Autoloader -r 0.8 -c "CHR_FR CHR_RR COR_FR COR_RR"
+
+./start.sh -p RR_GARNISH_NUT_19 -r 0.90 -c "130_fr_garnish_nut"
+./start.sh -p ABS_AI -r 0.80 -c "130_fr_garnish_nut"
+./start.sh -p RR_SPOILER_BOLD_19_NEW_DATA -r 0.90 -c "130_rr_spoiler_bold"
+./start.sh -p RR_SPOILER_CLIP_ALL_DATA -r 0.90 -c "130_rr_spoiler_clip"
+./start.sh -p RR_SPOILER_NUT -r 0.90 -c "130_rr_spoiler_nut"
+./start.sh -p RR_SPOILER_SCREW_19_NEW_DATA -r 0.90 -c "130_rr_spoiler_screw"
+
+
+# 3) Modeli eğit
+#    -b, --batch-size     : bir seferde işlenen görüntü sayısı
+#    -p, --project-name   : proje (run) adı
+#    -s, --img-size       : modelin eğitileceği kare boyutu (px)
+#    -e, --epochs         : toplam epoch sayısı
+#    -w, --weights        : başlangıç ağırlıkları (.pt dosyası)
+#    -d, --device         : kullanılacak GPU numarası
+#    -l, --log-dir        : log dosyalarının kaydedileceği klasör
+#    -y, --hyp            : hyperparameter ayar dosyası (YAML)
+
+./train.sh -b 23 -p RR_GARNISH_CLIP -s 640 -e 150 \
+           -w yolov7/yolov7.pt -d 0 -l logs \
+           -y yolov7/data/hyp.scratch.custom.yaml \
+           --noautoanchor
+r
+  
+./train.sh \
+  -b 16 \
+  -p RR_GARNISH_NUT_NEW \
+  -s 640 \
+  -e 200 \
+  -w yolov7/yolov7.pt \
+  -d 0 \
+  -l logs \
+  -y yolov7/data/hyp.scratch.custom.yaml \
+  --noautoanchor
+
+  -y yolov7/data/hyp.smallobj.yaml \
+
+
+
+  eğitim devam ettirme
+  
+./train.sh \
+  -b 16 \
+  -p RR_GARNISH_CLIP \
+  -s 640 \
+  -e 200 \
+  -w trainOutput/RR_GARNISH_CLIP15/weights/best.pt \
+  -d 0 \
+  -l logs \
+  -y yolov7/data/hyp.scratch.custom.yaml \
+  --noautoanchor
+
+
+  
+  
+#📈 TensorBoard ile takip etmek istersen: Terminale aşağıdaki kodu yaz
+
+tensorboard --logdir /home/toyota/Desktop/yolov7_proje/trainOutput
+
+# Sonra tarayıcıdan: http://localhost:6006
+
+
+  
+# 4) Eğitilmiş modeli test et (inference)
+#    --weights     : eğitimin sonunda oluşan 'last.pt' ağırlık dosyası
+#    --conf        : tespit güven eşiği (0.5 = %50 üzeri)
+#    --img-size    : modelin test için kullanacağı görüntü boyutu
+#    --source      : test edilecek resimlerin bulunduğu klasör
+#    --save-txt    : bulunan kutucukları .txt dosyasına kaydet
+
+
+python3 ~/Desktop/yolov7_proje/yolov7/detect.py \
+  --weights ~/Desktop/yolov7_proje/trainOutput/RR_GARNISH_NUT_192_anchor/weights/last.pt \
+  --conf 0.5 \
+  --img-size 640 \
+  --source ~/Desktop/yolov7_proje/test/RR_GARNISH_NUT/ \
+  --save-txt
+  
+  
+  
+TRT dönüştürücü
+chmod +x exportTRT.sh
+./exportTRT.sh PT
+

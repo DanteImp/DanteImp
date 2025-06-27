@@ -1,0 +1,19 @@
+chmod +x yolov7_setup.sh
+./yolov7_setup.sh
+
+
+
+python3 train_valid_split.py
+
+
+
+chmod +x labelimg_kur.sh
+./labelimg_kur.sh
+
+
+chmod +x setup_cuda_env.sh
+./setup_cuda_env.sh
+
+
+
+
