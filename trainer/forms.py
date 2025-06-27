@@ -1,7 +1,8 @@
-"""trainer.forms – Kullanıcıya sunulan basit Django form'ları."""
+"""trainer.forms – Kullanıcı formları."""
 
 from __future__ import annotations
 
+import json
 from typing import List
 
 from django import forms
@@ -12,15 +13,8 @@ from .models import Project, Training
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = [
-            "name",
-            "dataset_archive",
-            "split_ratio",
-            "class_names_raw",  # textarea – satır başına sınıf adı
-        ]
-        widgets = {
-            "class_names_raw": forms.Textarea(attrs={"rows": 4}),
-        }
+        fields = ["name", "dataset_archive", "split_ratio", "class_names_raw"]
+        widgets = {"class_names_raw": forms.Textarea(attrs={"rows": 4})}
 
     def clean_class_names_raw(self):
         raw: str = self.cleaned_data["class_names_raw"]
@@ -31,9 +25,7 @@ class ProjectForm(forms.ModelForm):
 
 
 class TrainingForm(forms.ModelForm):
-    """Belirli proje seçilerek eğitim parametreleri alınır."""
-
-    project = forms.ModelChoiceField(queryset=Project.objects.none())  # queryset boş başlıyor
+    project = forms.ModelChoiceField(queryset=Project.objects.none())
 
     class Meta:
         model = Training
@@ -41,5 +33,4 @@ class TrainingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # RuntimeWarning'i önlemek için queryset'i burada ayarla
         self.fields["project"].queryset = Project.objects.filter(status="ready")
