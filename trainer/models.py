@@ -1,6 +1,8 @@
 from pathlib import Path
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +28,14 @@ class Project(models.Model):
     # yardımcı
     def folder_path(self):
         return BASE_DIR / "projects" / self.name
+
+    @property
+    def project_dir(self):
+        return self.folder_path()
+
+    @property
+    def slug(self):
+        return slugify(self.name)
 
     def __str__(self):
         return f"{self.process_name} – {self.name}"

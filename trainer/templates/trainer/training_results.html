@@ -13,6 +13,7 @@
       <th>NoAutoAnchor</th>
       <th>Tarih</th>
       <th>Açıklama</th>
+      <th>Anchor</th>
     </tr>
   </thead>
   <tbody>
@@ -29,7 +30,7 @@
         <td>{{ training.anchors_json|truncatechars:40 }}</td>
       </tr>
     {% empty %}
-      <tr><td colspan="8">Henüz hiç eğitim yapılmamış.</td></tr>
+      <tr><td colspan="9">Henüz hiç eğitim yapılmamış.</td></tr>
     {% endfor %}
   </tbody>
 </table>
