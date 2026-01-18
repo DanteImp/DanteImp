@@ -4,6 +4,34 @@
 
 <h1>🚀 Proje Yönetimi</h1>
 
+<section style="margin-bottom: 24px;">
+    <h2>Yeni Proje Oluştur</h2>
+    <form method="post" action="{% url 'trainer:project_create' %}">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.name.id_for_label }}">Proje Adı:</label>
+            {{ form.name }}
+        </div>
+        <div>
+            <label for="{{ form.process_name.id_for_label }}">Süreç Adı:</label>
+            {{ form.process_name }}
+        </div>
+        <div>
+            <label for="{{ form.class_names.id_for_label }}">Sınıf İsimleri:</label>
+            {{ form.class_names }}
+        </div>
+        <div>
+            <label for="{{ form.train_ratio.id_for_label }}">Eğitim Oranı:</label>
+            {{ form.train_ratio }}
+        </div>
+        <div>
+            <label for="{{ form.description.id_for_label }}">Açıklama:</label>
+            {{ form.description }}
+        </div>
+        <button type="submit">➕ Proje Oluştur</button>
+    </form>
+</section>
+
 <table>
     <thead>
         <tr>
@@ -23,13 +51,15 @@
                         <span style="color: green;">✔ Tamamlandı</span>
                     {% elif project.status == "error" %}
                         <span style="color: red;">❌ Hata</span>
+                    {% elif project.status == "started" %}
+                        <span style="color: #ff9800;">🟡 Hazırlanıyor</span>
                     {% else %}
                         <span style="color: gray;">⏳ Beklemede</span>
                     {% endif %}
                 </td>
                 <td>{{ project.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="{% url 'trainer:start_project' project.id %}">🚀 Başlat</a>
+                    <a href="{% url 'trainer:train_view' %}">🎓 Eğitim Başlat</a>
                 </td>
             </tr>
             {% endfor %}

@@ -4,88 +4,70 @@
 {% block content %}
 <h2>📦 Yeni Eğitim Başlat</h2>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post">
   {% csrf_token %}
 
   <div>
-    <label for="project">Proje:</label>
-    <select name="project" id="project" required>
-      {% for project in form.fields.project.queryset %}
-        <option value="{{ project.id }}">{{ project.process_name }} - {{ project.name }}</option>
-      {% empty %}
-        <option disabled>Uygun proje yok</option>
-      {% endfor %}
-    </select>
+    <label for="{{ form.project.id_for_label }}">Proje:</label>
+    {{ form.project }}
     <small>✅ Sadece status=done olan projeler listelenir.</small>
   </div>
 
   <div>
-    <label for="img_size">Görsel Boyutu:</label>
-    <input type="number" name="img_size" value="640" required>
+    <label for="{{ form.img_size.id_for_label }}">Görsel Boyutu:</label>
+    {{ form.img_size }}
     <small>Örn: 640</small>
   </div>
 
   <div>
-    <label for="epochs">Epochs:</label>
-    <input type="number" name="epochs" value="100" required>
+    <label for="{{ form.epochs.id_for_label }}">Epochs:</label>
+    {{ form.epochs }}
     <small>Örn: 100</small>
   </div>
 
   <div>
-    <label for="batch_size">Batch Size:</label>
-    <input type="number" name="batch_size" value="16" required>
+    <label for="{{ form.batch_size.id_for_label }}">Batch Size:</label>
+    {{ form.batch_size }}
     <small>Örn: 16</small>
   </div>
 
   <div>
-    <label for="weights_path">Ağırlıklar:</label>
-    <input type="file" name="weights_path_input" onchange="updatePath(this, 'weights_path')">
-    <input type="text" name="weights_path" value="yolov7/yolov7.pt" readonly>
+    <label for="{{ form.weights_path.id_for_label }}">Ağırlıklar:</label>
+    {{ form.weights_path }}
     <small>Varsayılan: yolov7/yolov7.pt</small>
   </div>
 
   <div>
-    <label for="device">Cihaz:</label>
-    <input type="text" name="device" value="0" required>
+    <label for="{{ form.device.id_for_label }}">Cihaz:</label>
+    {{ form.device }}
     <small>Örn: 0 → GPU 0</small>
   </div>
 
   <div>
-    <label for="hyp_path">Hyp Dosyası:</label>
-    <input type="file" name="hyp_path_input" onchange="updatePath(this, 'hyp_path')">
-    <input type="text" name="hyp_path" value="yolov7/data/hyp.scratch.custom.yaml" readonly>
+    <label for="{{ form.hyp_path.id_for_label }}">Hyp Dosyası:</label>
+    {{ form.hyp_path }}
     <small>Varsayılan: yolov7/data/hyp.scratch.custom.yaml</small>
   </div>
 
   <div>
-    <label for="noautoanchor">No Auto Anchor:</label>
-    <input type="checkbox" name="noautoanchor">
+    <label for="{{ form.noautoanchor.id_for_label }}">No Auto Anchor:</label>
+    {{ form.noautoanchor }}
     <small>Seçiliyse anchor'lar otomatik hesaplanmaz.</small>
   </div>
 
   <div>
-    <label for="extra_args">Ek Argümanlar:</label>
-    <textarea name="extra_args" rows="2" placeholder="--exist-ok gibi YOLO argümanları..."></textarea>
+    <label for="{{ form.extra_args.id_for_label }}">Ek Argümanlar:</label>
+    {{ form.extra_args }}
   </div>
 
   <div>
-    <label for="description">Açıklama:</label>
-    <textarea name="description" rows="3" placeholder="Bu eğitimin amacı veya notları..."></textarea>
+    <label for="{{ form.description.id_for_label }}">Açıklama:</label>
+    {{ form.description }}
   </div>
 
   <div style="margin-top: 20px;">
     <button type="submit">🚀 Eğitimi Başlat</button>
   </div>
 </form>
-
-<script>
-function updatePath(inputElem, targetId) {
-  const fullPath = inputElem.value;
-  const fileName = fullPath.split('\\').pop().split('/').pop();
-  document.getElementById(targetId).value = inputElem.name.includes('weights')
-    ? 'yolov7/' + fileName
-    : 'yolov7/data/' + fileName;
-}
-</script>
 
 {% endblock %}
